@@ -1,0 +1,140 @@
+### **Product Requirements Document: AuraFlow - Breathing Companion**
+
+**Version:** 1.0
+**Date:** August 19, 2025
+**Author:** Ryan Brown
+**Status:** Draft
+
+---
+
+### 1. Introduction & Vision
+
+**1.1. Overview**
+AuraFlow is a serene, visually stunning application designed to guide users through intentional breathing exercises. It transforms the abstract concept of a breath into a beautiful, flowing visual and auditory experience, promoting mindfulness, focus, and relaxation while teaching evidence-backed techniques that improve and support mental health. Various types of spiritually-minded people will appreciate the app as a tool to enhance their practices. For example, practitioners of pranayama.
+
+**1.2. Product Vision**
+Create the most beautiful and intuitive digital app on the market for breath work, making mindfulness practice more accessible and engaging through a gorgeous, cutting-edge 3D visualization and lush ambient sound.
+
+**1.3. Target Audience**
+*   Individuals practicing meditation.
+*   Individuals practicing mindfulness.
+*   Therapists utilizing bio-feedback techniques with their patients.
+*   Patients working with bio-feedback through their therapists.
+*   Users seeking a tool for stress reduction and anxiety management.
+*   Yoga and wellness enthusiasts.
+*   Anyone needing a moment of focus or calm during their day.
+
+---
+
+### 2. Goals & Objectives
+
+**2.1. Primary Goals**
+*   **User Goal:** Successfully complete a guided breathing session tailored to their chosen inhale/exhale timing.
+*   **Business Goals:**
+		*** Deliver a visually and audibly polished experience that users find valuable and wish to return to.
+		*** Make the app available in the iOS app store 
+*   **Technical Goal:** Build a performant, cross-platform (Web & iOS) application using the specified React/Three.js tech stack.
+
+
+**2.2. Success Metrics (Post-Launch)**
+*   User Session Length **Target a shortest session of 5 minutes) with encouragement for users to do 20 minutes..
+*   Number of sessions completed per user per week. Track streaks. 
+*   App Store rating (Target: 4.7+ on iOS).
+*   Low crash rate / technical errors.
+
+---
+
+### 3. Core Features & Requirements
+
+**3.1. MVP (Minimum Viable Product) Scope**
+The first version will focus on a single, customizable breathing technique with a core visual and audio experience.
+
+**3.2. Feature Breakdown**
+
+| Feature | Description | Priority |
+| :--- | :--- | :--- |
+| **3D Breathing Animation** | Render the two-sphere .glb model. Animate a "light" or "energy" moving from the bottom of the lower sphere to the top of the upper sphere (inhale) and back down (exhale). The animation must be perfectly synchronized with the user-set timers. | Must Have |
+| **Breath Timer Control** | User input to set the duration of the **Inhale** and **Exhale** independently. Input will be via a stepper or slider with a range between 4 and 10 and with increments of **0.5 seconds**. A default of 5.0s in and 5.5s out will be set. | Must Have |
+| **Chakra Color Animation** | The animated "energy" will glow with the seven chakra colors. The colors will transition seamlessly as the energy moves upward (e.g., red at the base, transitioning to violet at the crown). The specific color patterns, glow intensity, and fade properties are expected to evolve during development to achieve the desired "beautiful" aesthetic. | Must Have |
+| **Ambient Sound Feedback** | A simple, pleasant, and continuous sound (e.g., a soft strings pad or wave sound) will play. The **pitch** of this sound will rise during the inhale and fall during the exhale, providing auditory reinforcement of the breath phase. | Must Have |
+| **Session Control** | Prominent **Start**, **Pause**, and **Reset** buttons. A session runs indefinitely until stopped by the user. | Must Have |
+| **Responsive Design** | The application must render and function correctly on modern web browsers (Chrome, Safari, Firefox) and as a native iOS app where its orientation is portrait (landscape orientation not supported. | Must Have |
+
+**3.3. Future Enhancements (Out of Scope for V1)**
+*   Follow current industry standards for minimum versions of iOS and web browsers
+
+**3.4. Future Enhancements (Out of Scope for V1)**
+*   Multiple breathing techniques (e.g., Box Breathing, 4-7-8).
+*   Preset timer configurations.
+*   Session history and statistics.
+*   Haptic feedback (on iOS).
+*   User accounts & cloud sync.
+*   Advanced audio settings (multiple sounds, volume control).
+
+
+### 4. User Flow
+
+1.  **Launch:** User opens the app (web or iOS).
+2.  **Ready State:** The 3D sphere model is displayed in a neutral/resting state.
+3.  **Set Parameters:** User adjusts the "Inhale" and "Exhale" duration sliders.
+4.  **Start Session:** User taps the "Start" button.
+5.  **Experience:**
+    *   The animation begins: energy flows upward, colors transition.
+    *   The sound plays, its pitch rising.
+    *   After the set inhale time, the animation and sound immediately, though gently, reverse for the exhale.
+    *   This loop continues.
+6.  **Control:** User can **Pause** (freezing the animation and sound) or **Reset** (stopping and returning to the ready state) at any time.
+
+---
+
+### 5. Design & UX Specifications
+
+**5.1. Visual Design**
+*   **Core Principle:** Minimalist, calming, and beautiful. The 3D animation is the hero.
+*   **UI Components:** Controls (sliders, buttons) should be simple, semi-transparent, and use a light/dark neutral color scheme (e.g., white or dark grey text on translucent backgrounds) to avoid distracting from the central visual.
+*   **Animation Evolution:** The PRD acknowledges that the specific properties of the chakra color animation (e.g., glow radius, transition speed, particle effects) are not yet finalized. The development process will include an iterative design phase to tweak these parameters in-engine (React Three Fiber) to achieve the target aesthetic. The current .glb model is a starting point and may be modified in Blender as needed.
+
+**5.2. Audio Design**
+*   **Sound is Optional:** Volume control can be set to zero.
+*   **Sound Quality:** The sound must be high-quality and loop seamlessly. It is meant to be a pleasant, optional guide.
+*   **Dynamic Pitch:** The pitch modulation must be smooth and directly tied to the animation's progress up and down the Y-axis.
+
+---
+
+### 6. Technical Specifications
+
+**6.1. Technology Stack**
+| Component | Technology |
+| :--- | :--- |
+| **Frontend Framework** | React 18 |
+| **3D Rendering Library** | React Three Fiber (R3F) & Three.js |
+| **3D Model Animation** | GLTF/GLB format, animated via R3F hooks |
+| **Build Tool** | Vite (for web) |
+| **iOS Wrapper** | Capacitor.js (Recommended) or React Native | This decision to be revisited before starting to build anything iOS specific
+| **3D Modeling Tool** | Blender |
+| **Sound** | Howler.js or Tone.js (for web audio) |
+
+**6.2. Key Implementation Details**
+*   The breathing cycle logic will be driven by a `useFrame` hook or a custom animation loop in R3F, using the user-set durations.
+*   The position of the animated energy and the pitch of the sound will be calculated as a function of time and the current phase (inhale/exhale).
+*   The color transition will be implemented using a gradient texture or shader material whose offset is controlled by the animation's Y-position.
+*   The iOS app will be created by wrapping the built web application using a tool like **Capacitor**, which provides native iOS capabilities and allows for deployment to the App Store. This avoids significant native iOS development while still providing a native app experience.
+
+---
+
+### 7. Open Questions & Assumptions
+
+*   **Assumption:** The provided .glb model is rigged or structured in a way that allows for the intended "energy flow" animation (likely via a shader or moving point light). If not, it will need modification in Blender.
+
+---
+
+### 8. Milestones & Timeline (Estimated)
+
+| Phase | Duration | Description |
+| :--- | :--- | :--- |
+| **Sprint 1: Core Setup** | 1-2 Weeks | Project bootstrapping (R3F, Vite). Basic rendering of the .glb model. Implementation of timer logic and UI controls. |
+| **Sprint 2: Animation** | 2 Weeks | Development of the core energy animation and its synchronization with the timers. |
+| **Sprint 3: Polish** | 2 Weeks | Iterative development of the chakra color transitions and glow effects. Integration and tuning of the dynamic sound. |
+| **Sprint 4: Testing & Release** | 1-2 Weeks | Cross-browser and device testing. Packaging for iOS using Capacitor. Submission to App Store (for iOS). Web deployment. |
+
+**Total Estimated MVP Timeline:** **6-8 Weeks**
