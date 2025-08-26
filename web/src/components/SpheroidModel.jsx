@@ -1,6 +1,4 @@
-import React, { Suspense, useRef, useCallback } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 
 export default function SpheroidsModel(props) {
     const { scene } = useGLTF("/models/spheroids.glb");

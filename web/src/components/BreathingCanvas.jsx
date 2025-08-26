@@ -1,7 +1,8 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import SpheroidsModel from './SpheroidModel'; // Uncomment for testing
+// import SpheroidsModel from './SpheroidModel'; // Testing/Analysis version
+import ChakraSpheroidModel from './ChakraSpheroidModel'; // Chakra zones version
 
 // Production version - simple and clean
 // function SpheroidsModel(props) {
@@ -16,7 +17,7 @@ export default function BreathingCanvas() {
                 <ambientLight intensity={0.7} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
                 <Suspense fallback={null}>
-                    <SpheroidsModel />
+                    <ChakraSpheroidModel />
                 </Suspense>
                 <OrbitControls enablePan={false} target={[0, 0, 0]} />
             </Canvas>
