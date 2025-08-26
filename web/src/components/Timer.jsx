@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
+import debug from '../utils/debug';
 
 export default function Timer({ onTimerUpdate }) {
-    console.log("=== TIMER COMPONENT RENDERING ===");
+    debug.timer("=== TIMER COMPONENT RENDERING ===");
     
     const [isRunning, setIsRunning] = useState(false);
     const [phase, setPhase] = useState('inhale'); // 'inhale' | 'exhale'
     const [timeRemaining, setTimeRemaining] = useState(5); // seconds
     const [cycleCount, setCycleCount] = useState(0);
     
-    console.log("Timer state:", { isRunning, phase, timeRemaining, cycleCount });
+    debug.timer("Timer state:", { isRunning, phase, timeRemaining, cycleCount });
     
     const INHALE_DURATION = 5; // seconds
     const EXHALE_DURATION = 5; // seconds
@@ -31,7 +32,7 @@ export default function Timer({ onTimerUpdate }) {
                 duration: phase === 'inhale' ? INHALE_DURATION : EXHALE_DURATION
             };
             onTimerUpdate(timerState);
-            console.log("Timer state sent to parent:", timerState);
+            debug.timer("Timer state sent to parent:", timerState);
         }
     }, [isRunning, phase, timeRemaining, cycleCount, onTimerUpdate]);
     
@@ -93,7 +94,7 @@ export default function Timer({ onTimerUpdate }) {
     
     // Log phase transitions for debugging
     useEffect(() => {
-        console.log(`Timer: ${phase.toUpperCase()} phase started - ${formatTime(timeRemaining)}s remaining`);
+        debug.timer(`Timer: ${phase.toUpperCase()} phase started - ${formatTime(timeRemaining)}s remaining`);
     }, [phase]);
     
     return (

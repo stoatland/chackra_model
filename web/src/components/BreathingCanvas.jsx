@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+import debug from '../utils/debug';
 // import SpheroidsModel from './SpheroidModel'; // Testing/Analysis version
 import ChakraSpheroidModel from './ChakraSpheroidModel'; // Chakra zones version
 
@@ -15,14 +16,14 @@ export default function BreathingCanvas({ timerState }) {
     // Log timer state changes in 3D scene
     useEffect(() => {
         if (timerState) {
-            console.log("=== 3D SCENE RECEIVED TIMER UPDATE ===");
-            console.log("Phase:", timerState.phase);
-            console.log("Progress:", timerState.progress.toFixed(3));
-            console.log("Time Remaining:", timerState.timeRemaining.toFixed(1));
-            console.log("Is Running:", timerState.isRunning);
-            console.log("Cycle Count:", timerState.cycleCount);
+            debug.canvas("=== 3D SCENE RECEIVED TIMER UPDATE ===");
+            debug.canvas("Phase:", timerState.phase);
+            debug.canvas("Progress:", timerState.progress.toFixed(3));
+            debug.canvas("Time Remaining:", timerState.timeRemaining.toFixed(1));
+            debug.canvas("Is Running:", timerState.isRunning);
+            debug.canvas("Cycle Count:", timerState.cycleCount);
         } else {
-            console.log("=== 3D SCENE: No timer state yet ===");
+            debug.canvas("=== 3D SCENE: No timer state yet ===");
         }
     }, [timerState]);
     

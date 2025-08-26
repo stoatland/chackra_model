@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
+import debug from '../utils/debug';
 
 const AudioController = ({ timerState, isEnabled = true }) => {
     const [audioContext, setAudioContext] = useState(null);
@@ -12,7 +13,7 @@ const AudioController = ({ timerState, isEnabled = true }) => {
         try {
             // Start Tone.js audio context (required for browser audio)
             await Tone.start();
-            console.log('Tone.js audio context started');
+            debug.audio('Tone.js audio context started');
             
             // Create oscillator with smooth envelope
             const osc = new Tone.Oscillator({
@@ -28,9 +29,9 @@ const AudioController = ({ timerState, isEnabled = true }) => {
             setAudioContext(Tone.context);
             setIsAudioStarted(true);
             
-            console.log('Audio controller initialized');
+            debug.audio('Audio controller initialized');
         } catch (error) {
-            console.error('Failed to initialize audio:', error);
+            debug.error('AUDIO', 'Failed to initialize audio:', error);
         }
     };
     
@@ -41,12 +42,12 @@ const AudioController = ({ timerState, isEnabled = true }) => {
         if (timerState.isRunning && isEnabled) {
             if (oscillator.state === 'stopped') {
                 oscillator.start();
-                console.log('Audio started with timer');
+                debug.audio('Audio started with timer');
             }
         } else {
             if (oscillator.state === 'started') {
                 oscillator.stop();
-                console.log('Audio stopped with timer');
+                debug.audio('Audio stopped with timer');
                 
                 // Recreate oscillator for next use (Tone.js oscillators can only be started once)
                 setTimeout(() => {
@@ -82,7 +83,7 @@ const AudioController = ({ timerState, isEnabled = true }) => {
             oscillator.frequency.rampTo(targetFreq, 0.1); // 100ms ramp for smoothness
         }
         
-        console.log(`Audio frequency: ${targetFreq.toFixed(1)}Hz (${timerState.phase})`);
+        debug.audio(`Audio frequency: ${targetFreq.toFixed(1)}Hz (${timerState.phase})`);
     }, [timerState, oscillator]);
     
     // Volume control

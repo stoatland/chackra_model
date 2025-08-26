@@ -3,34 +3,48 @@ import './App.css'
 import BreathingCanvas from './components/BreathingCanvas';
 import Timer from './components/Timer';
 import AudioController from './components/AudioController';
+import debug from './utils/debug';
 
 function App() {
   const [count, setCount] = useState(0)
   const [timerState, setTimerState] = useState(null);
   
-  console.log("App component rendering - Timer component loaded:", Timer);
-  console.log("Current timer state in App:", timerState);
+  debug.app("App component rendering - Timer component loaded:", Timer);
+  debug.app("Current timer state in App:", timerState);
   
   // Handle timer updates from Timer component
   const handleTimerUpdate = (newTimerState) => {
     setTimerState(newTimerState);
-    console.log("Timer state updated in App:", newTimerState);
+    debug.app("Timer state updated in App:", newTimerState);
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+    <div style={{ 
+      display: 'flex', 
+      width: '100%', 
+      height: '100vh',
+      maxWidth: '100vw',
+      overflow: 'hidden' 
+    }}>
       {/* 3D Scene */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ 
+        flex: 1, 
+        minWidth: 0,
+        overflow: 'hidden'
+      }}>
         <BreathingCanvas timerState={timerState} />
       </div>
       
       {/* Control Panel */}
       <div style={{ 
-        width: '400px', 
+        width: '400px',
+        minWidth: '400px',
+        maxWidth: '400px',
         overflow: 'auto',
         backgroundColor: '#f0f0f0',
         borderLeft: '2px solid #ccc',
-        padding: '1rem'
+        padding: '1rem',
+        boxSizing: 'border-box'
       }}>
         <AudioController timerState={timerState} />
         <Timer onTimerUpdate={handleTimerUpdate} />

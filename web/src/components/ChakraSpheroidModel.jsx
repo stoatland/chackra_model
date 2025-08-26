@@ -1,6 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
+import debug from '../utils/debug';
 
 export default function ChakraSpheroidModel({ timerState, ...props }) {
     const { scene } = useGLTF("/models/spheroids.glb");
@@ -8,10 +9,10 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
     // Log timer state changes in the model
     useEffect(() => {
         if (timerState) {
-            console.log("=== CHAKRA MODEL RECEIVED TIMER UPDATE ===");
-            console.log("Timer Phase:", timerState.phase);
-            console.log("Timer Progress:", timerState.progress.toFixed(3));
-            console.log("Timer Running:", timerState.isRunning);
+            debug.chakra("=== CHAKRA MODEL RECEIVED TIMER UPDATE ===");
+            debug.chakra("Timer Phase:", timerState.phase);
+            debug.chakra("Timer Progress:", timerState.progress.toFixed(3));
+            debug.chakra("Timer Running:", timerState.isRunning);
         }
     }, [timerState]);
     
@@ -42,14 +43,14 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             upperSpheroid.material.needsUpdate = true;
         }
         
-        console.log(`Chakra ${chakraIndex + 1} intensity set to ${intensity}`);
+        debug.chakra(`Chakra ${chakraIndex + 1} intensity set to ${intensity}`);
     };
 
         // Timer-driven chakra control - Phase 2.1
     useEffect(() => {
         if (!timerState || !timerState.isRunning) return;
         
-        console.log(`Timer-driven chakra control: phase=${timerState.phase}, progress=${timerState.progress}`);
+        debug.chakra(`Timer-driven chakra control: phase=${timerState.phase}, progress=${timerState.progress}`);
         
         if (timerState.phase === 'inhale') {
             // Progressive chakra activation (1-7) during inhale
@@ -92,7 +93,7 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
     }, [timerState]);
     
     useEffect(() => {
-        console.log("=== FULL CHAKRA ZONE SETUP ===");
+        debug.chakra("=== FULL CHAKRA ZONE SETUP ===");
         
         // Find our spheres
         const upperSpheroid = scene.getObjectByName('upperSpheroid');
@@ -109,13 +110,13 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             const lowerRadius = lowerHeight / 2;
             const upperRadius = upperHeight / 2;
             
-            console.log("Original sphere dimensions:");
-            console.log("  Lower sphere height:", lowerHeight.toFixed(2), "radius:", lowerRadius.toFixed(2));
-            console.log("  Upper sphere height:", upperHeight.toFixed(2), "radius:", upperRadius.toFixed(2));
-            console.log("  Lower sphere position - X:", originalLowerBox.min.x.toFixed(2), "to", originalLowerBox.max.x.toFixed(2));
-            console.log("  Lower sphere position - Z:", originalLowerBox.min.z.toFixed(2), "to", originalLowerBox.max.z.toFixed(2));
-            console.log("  Upper sphere position - X:", originalUpperBox.min.x.toFixed(2), "to", originalUpperBox.max.x.toFixed(2));
-            console.log("  Upper sphere position - Z:", originalUpperBox.min.z.toFixed(2), "to", originalUpperBox.max.z.toFixed(2));
+            debug.chakra("Original sphere dimensions:");
+            debug.chakra("  Lower sphere height:", lowerHeight.toFixed(2), "radius:", lowerRadius.toFixed(2));
+            debug.chakra("  Upper sphere height:", upperHeight.toFixed(2), "radius:", upperRadius.toFixed(2));
+            debug.chakra("  Lower sphere position - X:", originalLowerBox.min.x.toFixed(2), "to", originalLowerBox.max.x.toFixed(2));
+            debug.chakra("  Lower sphere position - Z:", originalLowerBox.min.z.toFixed(2), "to", originalLowerBox.max.z.toFixed(2));
+            debug.chakra("  Upper sphere position - X:", originalUpperBox.min.x.toFixed(2), "to", originalUpperBox.max.x.toFixed(2));
+            debug.chakra("  Upper sphere position - Z:", originalUpperBox.min.z.toFixed(2), "to", originalUpperBox.max.z.toFixed(2));
             
             // Position spheres so they touch AND are aligned on X and Z axes:
             // Both spheres should be centered at X=0, Z=0
@@ -128,9 +129,9 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             lowerSpheroid.updateMatrixWorld(true);
             upperSpheroid.updateMatrixWorld(true);
             
-            console.log("Repositioned for touching and alignment:");
-            console.log("  Lower sphere positioned at:", lowerSpheroid.position.x.toFixed(2), lowerSpheroid.position.y.toFixed(2), lowerSpheroid.position.z.toFixed(2));
-            console.log("  Upper sphere positioned at:", upperSpheroid.position.x.toFixed(2), upperSpheroid.position.y.toFixed(2), upperSpheroid.position.z.toFixed(2));
+            debug.chakra("Repositioned for touching and alignment:");
+            debug.chakra("  Lower sphere positioned at:", lowerSpheroid.position.x.toFixed(2), lowerSpheroid.position.y.toFixed(2), lowerSpheroid.position.z.toFixed(2));
+            debug.chakra("  Upper sphere positioned at:", upperSpheroid.position.x.toFixed(2), upperSpheroid.position.y.toFixed(2), upperSpheroid.position.z.toFixed(2));
             
             // Get bounding boxes AFTER repositioning
             const upperBox = new THREE.Box3().setFromObject(upperSpheroid);
@@ -142,12 +143,12 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             const totalHeight = combinedMaxY - combinedMinY;
             const zoneHeight = totalHeight / 7;
             
-            console.log("Stacked sphere dimensions:");
-            console.log("  Combined Y range:", combinedMinY.toFixed(2), "to", combinedMaxY.toFixed(2));
-            console.log("  Total height:", totalHeight.toFixed(2));
-            console.log("  Zone height:", zoneHeight.toFixed(2));
-            console.log("  Lower sphere Y:", lowerBox.min.y.toFixed(2), "to", lowerBox.max.y.toFixed(2));
-            console.log("  Upper sphere Y:", upperBox.min.y.toFixed(2), "to", upperBox.max.y.toFixed(2));
+            debug.chakra("Stacked sphere dimensions:");
+            debug.chakra("  Combined Y range:", combinedMinY.toFixed(2), "to", combinedMaxY.toFixed(2));
+            debug.chakra("  Total height:", totalHeight.toFixed(2));
+            debug.chakra("  Zone height:", zoneHeight.toFixed(2));
+            debug.chakra("  Lower sphere Y:", lowerBox.min.y.toFixed(2), "to", lowerBox.max.y.toFixed(2));
+            debug.chakra("  Upper sphere Y:", upperBox.min.y.toFixed(2), "to", upperBox.max.y.toFixed(2));
             
             // Calculate Y boundaries for each chakra zone across the entire stacked structure
             const zoneBoundaries = [];
@@ -157,9 +158,9 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
                 zoneBoundaries.push({ yStart, yEnd, chakra: i + 1, color: chakraColors[i] });
             }
             
-            console.log("Chakra zone boundaries across stacked spheres:");
+            debug.chakra("Chakra zone boundaries across stacked spheres:");
             zoneBoundaries.forEach(zone => {
-                console.log(`  ${zone.chakra}. Y ${zone.yStart.toFixed(2)} to ${zone.yEnd.toFixed(2)}`);
+                debug.chakra(`  ${zone.chakra}. Y ${zone.yStart.toFixed(2)} to ${zone.yEnd.toFixed(2)}`);
             });
             
             // Apply shader material to BOTH spheres for consistent chakra zones
@@ -229,7 +230,7 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
                 `
             });
             
-            console.log("Applying unified shader material to both spheres for timer control");
+            debug.chakra("Applying unified shader material to both spheres for timer control");
             lowerSpheroid.material = shaderMaterial;
             upperSpheroid.material = shaderMaterial;
             
@@ -239,10 +240,10 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             upperSpheroid.userData.zoneBoundaries = zoneBoundaries;
             lowerSpheroid.userData.zoneBoundaries = zoneBoundaries;
             
-            console.log("Chakra zone setup complete - ready for animation control");
+            debug.chakra("Chakra zone setup complete - ready for animation control");
         }
         
-        console.log("=== CHAKRA SETUP COMPLETE ===\n");
+        debug.chakra("=== CHAKRA SETUP COMPLETE ===\n");
     }, [scene, chakraColors]);
     
     return <primitive object={scene} {...props} />;
