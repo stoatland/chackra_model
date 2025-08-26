@@ -18,28 +18,79 @@ export default function ChakraSpheroidModel(props) {
 
     // Function to control chakra intensity (for testing)
     const setChakraIntensity = (chakraIndex, intensity) => {
+        const upperSpheroid = scene.getObjectByName('upperSpheroid');
         const lowerSpheroid = scene.getObjectByName('lowerSpheroid');
         
-        if (lowerSpheroid?.userData.shaderMaterial) {
-            const material = lowerSpheroid.userData.shaderMaterial;
-            material.uniforms.chakraIntensities.value[chakraIndex] = intensity;
-            material.needsUpdate = true;
-            console.log(`Chakra ${chakraIndex + 1} intensity set to ${intensity}`);
+        // Both spheres use the same shader material now
+        if (lowerSpheroid?.material?.uniforms) {
+            lowerSpheroid.material.uniforms.chakraIntensities.value[chakraIndex] = intensity;
+            lowerSpheroid.material.needsUpdate = true;
         }
+        
+        if (upperSpheroid?.material?.uniforms) {
+            upperSpheroid.material.uniforms.chakraIntensities.value[chakraIndex] = intensity;
+            upperSpheroid.material.needsUpdate = true;
+        }
+        
+        console.log(`Chakra ${chakraIndex + 1} intensity set to ${intensity}`);
     };
 
     // Test chakra control after setup (temporary for testing)
     useEffect(() => {
         const timer = setTimeout(() => {
-            console.log("=== TESTING CHAKRA CONTROL ===");
-            // Light up chakra 1 (root) at 50% intensity
-            setChakraIntensity(0, 0.5);
+            console.log("=== PROGRESSIVE CHAKRA ACTIVATION TEST ===");
             
-            // Light up chakra 4 (heart) at 75% intensity after 1 second
-            setTimeout(() => setChakraIntensity(3, 0.75), 1000);
+            // Progressive activation: each chakra turns on and stays on
+            // Chakra 1 (Root) - Red
+            setTimeout(() => {
+                setChakraIntensity(0, 0.8);
+                console.log("🔴 Chakra 1 (Root) activated");
+            }, 1000);
             
-            // Light up chakra 7 (crown) at 100% intensity after 2 seconds
-            setTimeout(() => setChakraIntensity(6, 1.0), 2000);
+            // Chakra 2 (Sacral) - Orange (1 stays on)
+            setTimeout(() => {
+                setChakraIntensity(1, 0.8);
+                console.log("🟠 Chakra 2 (Sacral) activated");
+            }, 2000);
+            
+            // Chakra 3 (Solar Plexus) - Yellow (1-2 stay on)
+            setTimeout(() => {
+                setChakraIntensity(2, 0.8);
+                console.log("🟡 Chakra 3 (Solar Plexus) activated");
+            }, 3000);
+            
+            // Chakra 4 (Heart) - Green (1-3 stay on) - SPANS JUNCTION
+            setTimeout(() => {
+                setChakraIntensity(3, 0.8);
+                console.log("🟢 Chakra 4 (Heart) activated - spanning junction!");
+            }, 4000);
+            
+            // Chakra 5 (Throat) - Blue (1-4 stay on)
+            setTimeout(() => {
+                setChakraIntensity(4, 0.8);
+                console.log("🔵 Chakra 5 (Throat) activated");
+            }, 5000);
+            
+            // Chakra 6 (Third Eye) - Indigo (1-5 stay on)
+            setTimeout(() => {
+                setChakraIntensity(5, 0.8);
+                console.log("🟣 Chakra 6 (Third Eye) activated");
+            }, 6000);
+            
+            // Chakra 7 (Crown) - Violet (1-6 stay on)
+            setTimeout(() => {
+                setChakraIntensity(6, 0.8);
+                console.log("🟣 Chakra 7 (Crown) activated - ALL CHAKRAS ACTIVE!");
+            }, 7000);
+            
+            // Hold all active for 2 seconds, then reset
+            setTimeout(() => {
+                console.log("✨ Resetting all chakras");
+                for (let i = 0; i < 7; i++) {
+                    setChakraIntensity(i, 0.1);
+                }
+            }, 10000);
+            
         }, 2000);
         
         return () => clearTimeout(timer);
@@ -53,45 +104,91 @@ export default function ChakraSpheroidModel(props) {
         const lowerSpheroid = scene.getObjectByName('lowerSpheroid');
         
         if (upperSpheroid && lowerSpheroid) {
-            // Get bounding boxes
+            // First, get the original bounding boxes to understand sphere dimensions
+            const originalUpperBox = new THREE.Box3().setFromObject(upperSpheroid);
+            const originalLowerBox = new THREE.Box3().setFromObject(lowerSpheroid);
+            
+            // Calculate sphere heights (should be diameter)
+            const lowerHeight = originalLowerBox.max.y - originalLowerBox.min.y;
+            const upperHeight = originalUpperBox.max.y - originalUpperBox.min.y;
+            const lowerRadius = lowerHeight / 2;
+            const upperRadius = upperHeight / 2;
+            
+            console.log("Original sphere dimensions:");
+            console.log("  Lower sphere height:", lowerHeight.toFixed(2), "radius:", lowerRadius.toFixed(2));
+            console.log("  Upper sphere height:", upperHeight.toFixed(2), "radius:", upperRadius.toFixed(2));
+            console.log("  Lower sphere position - X:", originalLowerBox.min.x.toFixed(2), "to", originalLowerBox.max.x.toFixed(2));
+            console.log("  Lower sphere position - Z:", originalLowerBox.min.z.toFixed(2), "to", originalLowerBox.max.z.toFixed(2));
+            console.log("  Upper sphere position - X:", originalUpperBox.min.x.toFixed(2), "to", originalUpperBox.max.x.toFixed(2));
+            console.log("  Upper sphere position - Z:", originalUpperBox.min.z.toFixed(2), "to", originalUpperBox.max.z.toFixed(2));
+            
+            // Position spheres so they touch AND are aligned on X and Z axes:
+            // Both spheres should be centered at X=0, Z=0
+            // Lower sphere bottom at -lowerRadius, top at 0
+            // Upper sphere bottom at 0, top at +upperRadius
+            lowerSpheroid.position.set(0, -lowerRadius, 0);   // Center at origin, move down
+            upperSpheroid.position.set(0, upperRadius, 0);    // Center at origin, move up
+            
+            // Force matrix updates to ensure positioning takes effect immediately
+            lowerSpheroid.updateMatrixWorld(true);
+            upperSpheroid.updateMatrixWorld(true);
+            
+            console.log("Repositioned for touching and alignment:");
+            console.log("  Lower sphere positioned at:", lowerSpheroid.position.x.toFixed(2), lowerSpheroid.position.y.toFixed(2), lowerSpheroid.position.z.toFixed(2));
+            console.log("  Upper sphere positioned at:", upperSpheroid.position.x.toFixed(2), upperSpheroid.position.y.toFixed(2), upperSpheroid.position.z.toFixed(2));
+            
+            // Get bounding boxes AFTER repositioning
             const upperBox = new THREE.Box3().setFromObject(upperSpheroid);
             const lowerBox = new THREE.Box3().setFromObject(lowerSpheroid);
             
-            // Calculate total height and zone boundaries
-            const totalHeight = Math.abs(upperBox.max.y) + Math.abs(lowerBox.min.y);
+            // Calculate total height spanning both stacked spheres
+            const combinedMinY = lowerBox.min.y;  // Bottom of lower sphere
+            const combinedMaxY = upperBox.max.y;  // Top of upper sphere
+            const totalHeight = combinedMaxY - combinedMinY;
             const zoneHeight = totalHeight / 7;
             
-            console.log("Total height:", totalHeight);
-            console.log("Zone height:", zoneHeight);
-            console.log("Lower sphere Y range:", lowerBox.min.y, "to", lowerBox.max.y);
-            console.log("Upper sphere Y range:", upperBox.min.y, "to", upperBox.max.y);
+            console.log("Stacked sphere dimensions:");
+            console.log("  Combined Y range:", combinedMinY.toFixed(2), "to", combinedMaxY.toFixed(2));
+            console.log("  Total height:", totalHeight.toFixed(2));
+            console.log("  Zone height:", zoneHeight.toFixed(2));
+            console.log("  Lower sphere Y:", lowerBox.min.y.toFixed(2), "to", lowerBox.max.y.toFixed(2));
+            console.log("  Upper sphere Y:", upperBox.min.y.toFixed(2), "to", upperBox.max.y.toFixed(2));
             
-            // Calculate Y boundaries for each chakra zone
+            // Calculate Y boundaries for each chakra zone across the entire stacked structure
             const zoneBoundaries = [];
             for (let i = 0; i < 7; i++) {
-                const yStart = lowerBox.min.y + (i * zoneHeight);
-                const yEnd = lowerBox.min.y + ((i + 1) * zoneHeight);
+                const yStart = combinedMinY + (i * zoneHeight);
+                const yEnd = combinedMinY + ((i + 1) * zoneHeight);
                 zoneBoundaries.push({ yStart, yEnd, chakra: i + 1, color: chakraColors[i] });
             }
             
-            console.log("Chakra zone boundaries:", zoneBoundaries);
+            console.log("Chakra zone boundaries across stacked spheres:");
+            zoneBoundaries.forEach(zone => {
+                console.log(`  ${zone.chakra}. Y ${zone.yStart.toFixed(2)} to ${zone.yEnd.toFixed(2)}`);
+            });
             
-            // Create shader material for lower sphere (chakras 1-3 + half of 4)
-            const lowerShaderMaterial = new THREE.ShaderMaterial({
+            // Apply shader material to BOTH spheres for consistent chakra zones
+            const shaderMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     chakraColors: { value: chakraColors.map(c => new THREE.Color(c)) },
                     chakraIntensities: { value: new Array(7).fill(0.0) }, // All off initially
                     zoneBoundaries: { value: zoneBoundaries.map(z => [z.yStart, z.yEnd]).flat() },
-                    minY: { value: lowerBox.min.y },
-                    maxY: { value: lowerBox.max.y }
+                    minY: { value: combinedMinY },
+                    maxY: { value: combinedMaxY }
                 },
                 vertexShader: `
                     varying vec3 vPosition;
+                    varying vec3 vWorldPosition;
                     varying vec3 vNormal;
                     
                     void main() {
                         vPosition = position;
                         vNormal = normalize(normalMatrix * normal);
+                        
+                        // Get world position for consistent zone calculation
+                        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+                        vWorldPosition = worldPos.xyz;
+                        
                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                     }
                 `,
@@ -103,14 +200,15 @@ export default function ChakraSpheroidModel(props) {
                     uniform float maxY;
                     
                     varying vec3 vPosition;
+                    varying vec3 vWorldPosition;
                     varying vec3 vNormal;
                     
                     void main() {
                         vec3 baseColor = vec3(0.8, 0.8, 0.8); // Default gray
                         vec3 emissiveColor = vec3(0.0);
                         
-                        // Determine which chakra zone this fragment belongs to
-                        float worldY = vPosition.y;
+                        // Use world position Y for consistent zone calculation across both spheres
+                        float worldY = vWorldPosition.y;
                         
                         for (int i = 0; i < 7; i++) {
                             float zoneStart = zoneBoundaries[i * 2];
@@ -134,29 +232,13 @@ export default function ChakraSpheroidModel(props) {
                 `
             });
             
-            // For now, use a simpler test - create upper sphere with violet, lower with red
-            // We'll implement the full shader system next
-            const testUpperMaterial = new THREE.MeshStandardMaterial({
-                color: chakraColors[6], // Violet
-                emissive: new THREE.Color(chakraColors[6]).multiplyScalar(0.1),
-                emissiveIntensity: 0.2
-            });
-            
-            const testLowerMaterial = new THREE.MeshStandardMaterial({
-                color: chakraColors[0], // Red  
-                emissive: new THREE.Color(chakraColors[0]).multiplyScalar(0.1),
-                emissiveIntensity: 0.2
-            });
-            
-            // Apply the shader material to lower sphere (for now, testing)
-            console.log("Applying shader material to lower sphere");
-            lowerSpheroid.material = lowerShaderMaterial;
-            
-            // Keep upper sphere simple for comparison
-            upperSpheroid.material = testUpperMaterial;
+            console.log("Applying unified shader material to both spheres");
+            lowerSpheroid.material = shaderMaterial;
+            upperSpheroid.material = shaderMaterial;
             
             // Store data for future use
-            lowerSpheroid.userData.shaderMaterial = lowerShaderMaterial;
+            lowerSpheroid.userData.shaderMaterial = shaderMaterial;
+            upperSpheroid.userData.shaderMaterial = shaderMaterial;
             upperSpheroid.userData.zoneBoundaries = zoneBoundaries;
             lowerSpheroid.userData.zoneBoundaries = zoneBoundaries;
             
