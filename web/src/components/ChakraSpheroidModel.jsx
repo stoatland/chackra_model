@@ -45,66 +45,51 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
         console.log(`Chakra ${chakraIndex + 1} intensity set to ${intensity}`);
     };
 
-    // Test chakra control after setup (temporary for testing)
+        // Timer-driven chakra control - Phase 2.1
     useEffect(() => {
-        const timer = setTimeout(() => {
-            console.log("=== PROGRESSIVE CHAKRA ACTIVATION TEST ===");
-            
-            // Progressive activation: each chakra turns on and stays on
-            // Chakra 1 (Root) - Red
-            setTimeout(() => {
-                setChakraIntensity(0, 0.8);
-                console.log("🔴 Chakra 1 (Root) activated");
-            }, 1000);
-            
-            // Chakra 2 (Sacral) - Orange (1 stays on)
-            setTimeout(() => {
-                setChakraIntensity(1, 0.8);
-                console.log("🟠 Chakra 2 (Sacral) activated");
-            }, 2000);
-            
-            // Chakra 3 (Solar Plexus) - Yellow (1-2 stay on)
-            setTimeout(() => {
-                setChakraIntensity(2, 0.8);
-                console.log("🟡 Chakra 3 (Solar Plexus) activated");
-            }, 3000);
-            
-            // Chakra 4 (Heart) - Green (1-3 stay on) - SPANS JUNCTION
-            setTimeout(() => {
-                setChakraIntensity(3, 0.8);
-                console.log("🟢 Chakra 4 (Heart) activated - spanning junction!");
-            }, 4000);
-            
-            // Chakra 5 (Throat) - Blue (1-4 stay on)
-            setTimeout(() => {
-                setChakraIntensity(4, 0.8);
-                console.log("🔵 Chakra 5 (Throat) activated");
-            }, 5000);
-            
-            // Chakra 6 (Third Eye) - Indigo (1-5 stay on)
-            setTimeout(() => {
-                setChakraIntensity(5, 0.8);
-                console.log("🟣 Chakra 6 (Third Eye) activated");
-            }, 6000);
-            
-            // Chakra 7 (Crown) - Violet (1-6 stay on)
-            setTimeout(() => {
-                setChakraIntensity(6, 0.8);
-                console.log("🟣 Chakra 7 (Crown) activated - ALL CHAKRAS ACTIVE!");
-            }, 7000);
-            
-            // Hold all active for 2 seconds, then reset
-            setTimeout(() => {
-                console.log("✨ Resetting all chakras");
-                for (let i = 0; i < 7; i++) {
-                    setChakraIntensity(i, 0.1);
-                }
-            }, 10000);
-            
-        }, 2000);
+        if (!timerState || !timerState.isRunning) return;
         
-        return () => clearTimeout(timer);
-    }, [scene]);
+        console.log(`Timer-driven chakra control: phase=${timerState.phase}, progress=${timerState.progress}`);
+        
+        if (timerState.phase === 'inhale') {
+            // Progressive chakra activation (1-7) during inhale
+            const activeChakras = Math.min(7, Math.floor(timerState.progress * 7) + 1);
+            const currentProgress = (timerState.progress * 7) % 1; // Fractional part for smooth transitions
+            
+            for (let i = 0; i < 7; i++) {
+                let intensity = 0.1; // Base dim level
+                
+                if (i < activeChakras - 1) {
+                    // Fully activated chakras
+                    intensity = 1.0;
+                } else if (i === activeChakras - 1) {
+                    // Currently activating chakra with smooth transition
+                    intensity = 0.1 + (0.9 * currentProgress);
+                }
+                
+                setChakraIntensity(i, intensity);
+            }
+        } else if (timerState.phase === 'exhale') {
+            // Progressive chakra deactivation (7-1) during exhale
+            const dimmedChakras = Math.min(7, Math.floor(timerState.progress * 7) + 1);
+            const currentProgress = (timerState.progress * 7) % 1; // Fractional part for smooth transitions
+            
+            for (let i = 0; i < 7; i++) {
+                const reverseIndex = 6 - i; // 6,5,4,3,2,1,0 for chakras 7,6,5,4,3,2,1
+                let intensity = 1.0; // Start fully bright
+                
+                if (reverseIndex < dimmedChakras - 1) {
+                    // Fully dimmed chakras
+                    intensity = 0.1;
+                } else if (reverseIndex === dimmedChakras - 1) {
+                    // Currently dimming chakra with smooth transition
+                    intensity = 1.0 - (0.9 * currentProgress);
+                }
+                
+                setChakraIntensity(i, intensity);
+            }
+        }
+    }, [timerState]);
     
     useEffect(() => {
         console.log("=== FULL CHAKRA ZONE SETUP ===");
@@ -181,7 +166,7 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
             const shaderMaterial = new THREE.ShaderMaterial({
                 uniforms: {
                     chakraColors: { value: chakraColors.map(c => new THREE.Color(c)) },
-                    chakraIntensities: { value: new Array(7).fill(0.0) }, // All off initially
+                    chakraIntensities: { value: new Array(7).fill(0.1) }, // Start dim
                     zoneBoundaries: { value: zoneBoundaries.map(z => [z.yStart, z.yEnd]).flat() },
                     minY: { value: combinedMinY },
                     maxY: { value: combinedMaxY }
@@ -214,7 +199,7 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
                     varying vec3 vNormal;
                     
                     void main() {
-                        vec3 baseColor = vec3(0.8, 0.8, 0.8); // Default gray
+                        vec3 baseColor = vec3(0.3, 0.3, 0.4); // Darker base for better contrast
                         vec3 emissiveColor = vec3(0.0);
                         
                         // Use world position Y for consistent zone calculation across both spheres
@@ -226,15 +211,17 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
                             
                             if (worldY >= zoneStart && worldY <= zoneEnd) {
                                 float intensity = chakraIntensities[i];
-                                baseColor = mix(baseColor, chakraColors[i], intensity);
-                                emissiveColor = chakraColors[i] * intensity * 0.3;
+                                
+                                // Enhanced color mixing and emissive glow
+                                baseColor = mix(baseColor, chakraColors[i], intensity * 0.7);
+                                emissiveColor = chakraColors[i] * intensity * 0.5; // Stronger emissive
                                 break;
                             }
                         }
                         
                         // Simple lighting calculation
                         vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
-                        float lightIntensity = max(0.0, dot(vNormal, lightDir)) * 0.8 + 0.2;
+                        float lightIntensity = max(0.0, dot(vNormal, lightDir)) * 0.6 + 0.4;
                         
                         vec3 finalColor = baseColor * lightIntensity + emissiveColor;
                         gl_FragColor = vec4(finalColor, 1.0);
@@ -242,7 +229,7 @@ export default function ChakraSpheroidModel({ timerState, ...props }) {
                 `
             });
             
-            console.log("Applying unified shader material to both spheres");
+            console.log("Applying unified shader material to both spheres for timer control");
             lowerSpheroid.material = shaderMaterial;
             upperSpheroid.material = shaderMaterial;
             

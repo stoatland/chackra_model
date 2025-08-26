@@ -58,13 +58,14 @@
 **Goal**: Prepare model for programmable lighting  
 **Time**: 2 days  
 **Tasks**:
-- [ ] Modify GLB model to have separate materials for each chakra zone
-- [ ] Create 7 distinct materials with chakra colors (red→violet)
-- [ ] Test material assignments in Three.js
-- [ ] Implement material.emissive control for glow effect
-- [ ] Verify each zone can be controlled independently
+- [x] Modify GLB model to have separate materials for each chakra zone
+- [x] Create 7 distinct materials with chakra colors (red→violet)
+- [x] Test material assignments in Three.js
+- [x] Implement material.emissive control for glow effect
+- [x] Verify each zone can be controlled independently
 
 **Deliverable**: Model with 7 controllable chakra zone materials
+**Status**: ✅ COMPLETE - Unified shader system with 7 chakra zones and emissive glow
 
 **Test**: Each chakra zone can change color/brightness independently
 
@@ -72,13 +73,14 @@
 **Goal**: Light up zones 1→7 during 5s inhale  
 **Time**: 2 days  
 **Tasks**:
-- [ ] Create `ChakraController.jsx` component
-- [ ] Calculate which chakras should be active based on timer progress
-- [ ] Map timer progress (0-1) to chakra activation (zones 1-7)
-- [ ] Implement smooth brightness interpolation for each zone
-- [ ] Connect to timer inhale phase
+- [x] Create `ChakraController.jsx` component (integrated into ChakraSpheroidModel)
+- [x] Calculate which chakras should be active based on timer progress
+- [x] Map timer progress (0-1) to chakra activation (zones 1-7)
+- [x] Implement smooth brightness interpolation for each zone
+- [x] Connect to timer inhale phase
 
 **Deliverable**: Chakras light up progressively during inhale
+**Status**: ✅ COMPLETE - Smooth 1→7 progressive activation with transitions
 
 **Test**: All 7 chakras gradually brighten over 5 seconds during inhale
 
@@ -86,12 +88,13 @@
 **Goal**: Dim zones 7→1 during 5s exhale  
 **Time**: 1 day  
 **Tasks**:
-- [ ] Reverse the progression for exhale phase
-- [ ] Map timer progress to chakra deactivation (zones 7-1)
-- [ ] Implement smooth dimming interpolation
-- [ ] Test full cycle: brighten on inhale, dim on exhale
+- [x] Reverse the progression for exhale phase
+- [x] Map timer progress to chakra deactivation (zones 7-1)
+- [x] Implement smooth dimming interpolation
+- [x] Test full cycle: brighten on inhale, dim on exhale
 
 **Deliverable**: Complete chakra lighting cycle
+**Status**: ✅ COMPLETE - Smooth 7→1 progressive dimming with transitions
 
 **Test**: Full breath cycle shows smooth lighting transitions
 
