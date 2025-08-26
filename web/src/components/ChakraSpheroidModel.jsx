@@ -2,8 +2,18 @@ import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 
-export default function ChakraSpheroidModel(props) {
+export default function ChakraSpheroidModel({ timerState, ...props }) {
     const { scene } = useGLTF("/models/spheroids.glb");
+    
+    // Log timer state changes in the model
+    useEffect(() => {
+        if (timerState) {
+            console.log("=== CHAKRA MODEL RECEIVED TIMER UPDATE ===");
+            console.log("Timer Phase:", timerState.phase);
+            console.log("Timer Progress:", timerState.progress.toFixed(3));
+            console.log("Timer Running:", timerState.isRunning);
+        }
+    }, [timerState]);
     
     // Chakra colors (1=Red → 7=Violet)
     const chakraColors = useMemo(() => [

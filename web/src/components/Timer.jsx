@@ -35,9 +35,6 @@ export default function Timer({ onTimerUpdate }) {
         }
     }, [isRunning, phase, timeRemaining, cycleCount, onTimerUpdate]);
     
-    const INHALE_DURATION = 5; // seconds
-    const EXHALE_DURATION = 5; // seconds
-    
     // Reset timer to start of current phase
     const resetPhase = useCallback(() => {
         setTimeRemaining(phase === 'inhale' ? INHALE_DURATION : EXHALE_DURATION);
@@ -88,12 +85,6 @@ export default function Timer({ onTimerUpdate }) {
         
         return () => clearInterval(interval);
     }, [isRunning, switchPhase, phase]);
-    
-    // Calculate progress (0-1) for current phase
-    const getProgress = () => {
-        const duration = phase === 'inhale' ? INHALE_DURATION : EXHALE_DURATION;
-        return (duration - timeRemaining) / duration;
-    };
     
     // Format time display
     const formatTime = (time) => {

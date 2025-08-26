@@ -5,14 +5,22 @@ import Timer from './components/Timer';
 
 function App() {
   const [count, setCount] = useState(0)
+  const [timerState, setTimerState] = useState(null);
   
   console.log("App component rendering - Timer component loaded:", Timer);
+  console.log("Current timer state in App:", timerState);
+  
+  // Handle timer updates from Timer component
+  const handleTimerUpdate = (newTimerState) => {
+    setTimerState(newTimerState);
+    console.log("Timer state updated in App:", newTimerState);
+  };
 
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       {/* 3D Scene */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <BreathingCanvas />
+        <BreathingCanvas timerState={timerState} />
       </div>
       
       {/* Timer UI */}
@@ -22,7 +30,7 @@ function App() {
         backgroundColor: '#f0f0f0',
         borderLeft: '2px solid #ccc'
       }}>
-        <Timer />
+        <Timer onTimerUpdate={handleTimerUpdate} />
       </div>
     </div>
   );
