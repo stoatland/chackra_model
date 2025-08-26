@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import BreathingCanvas from './components/BreathingCanvas';
 import Timer from './components/Timer';
+import AudioController from './components/AudioController';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,13 +24,15 @@ function App() {
         <BreathingCanvas timerState={timerState} />
       </div>
       
-      {/* Timer UI */}
+      {/* Control Panel */}
       <div style={{ 
         width: '400px', 
         overflow: 'auto',
         backgroundColor: '#f0f0f0',
-        borderLeft: '2px solid #ccc'
+        borderLeft: '2px solid #ccc',
+        padding: '1rem'
       }}>
+        <AudioController timerState={timerState} />
         <Timer onTimerUpdate={handleTimerUpdate} />
       </div>
     </div>
