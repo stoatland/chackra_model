@@ -153,13 +153,13 @@
 - [x] Add volume controls
 - [x] Implement audio fade in/out for smooth start/stop
 - [x] Choose better waveform (sine, triangle, etc.)
-- [ ] Add subtle reverb or effects for ambiance
-- [ ] Test on different devices/browsers
+- [ ] ~~Add subtle reverb or effects for ambiance~~ (Skip for now - audio needs more work later)
+- [ ] Test on different devices/browsers using BrowserStack (see `web/BROWSERSTACK_TESTING_CHECKLIST.md`)
 
 **Deliverable**: Polished audio experience
-**Status**: 🔄 IN PROGRESS - Volume controls and smooth sine wave implemented
+**Status**: 🔄 IN PROGRESS - Volume controls and smooth sine wave implemented, needs device testing
 
-**Test**: Audio sounds good and works across devices
+**Test**: Audio sounds good and works across devices (BrowserStack checklist complete)
 
 ---
 
