@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import './App.css'
 import BreathingCanvas from './components/BreathingCanvas';
 import Timer from './components/Timer';
@@ -12,11 +12,11 @@ function App() {
   debug.app("App component rendering - Timer component loaded:", Timer);
   debug.app("Current timer state in App:", timerState);
   
-  // Handle timer updates from Timer component
-  const handleTimerUpdate = (newTimerState) => {
+  // Handle timer updates from Timer component - wrap in useCallback to prevent infinite re-renders
+  const handleTimerUpdate = useCallback((newTimerState) => {
     setTimerState(newTimerState);
     debug.app("Timer state updated in App:", newTimerState);
-  };
+  }, []); // Empty dependency array since we only use setTimerState (which is stable)
 
   return (
     <div style={{ 

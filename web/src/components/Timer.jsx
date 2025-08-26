@@ -14,11 +14,11 @@ export default function Timer({ onTimerUpdate }) {
     const INHALE_DURATION = 5; // seconds
     const EXHALE_DURATION = 5; // seconds
     
-    // Calculate progress (0-1) for current phase
-    const getProgress = () => {
+    // Calculate progress (0-1) for current phase - wrap in useCallback for stability
+    const getProgress = useCallback(() => {
         const duration = phase === 'inhale' ? INHALE_DURATION : EXHALE_DURATION;
         return (duration - timeRemaining) / duration;
-    };
+    }, [phase, timeRemaining]);
     
     // Send timer state to parent component
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function Timer({ onTimerUpdate }) {
             onTimerUpdate(timerState);
             debug.timer("Timer state sent to parent:", timerState);
         }
-    }, [isRunning, phase, timeRemaining, cycleCount, onTimerUpdate]);
+    }, [isRunning, phase, timeRemaining, cycleCount, getProgress]); // Removed onTimerUpdate from dependencies
     
     // Reset timer to start of current phase
     const resetPhase = useCallback(() => {
@@ -76,18 +76,25 @@ export default function Timer({ onTimerUpdate }) {
         const interval = setInterval(() => {
             setTimeRemaining(prev => {
                 if (prev <= 0.1) {
-                    // Phase complete, switch to next
-                    switchPhase();
-                    return phase === 'inhale' ? EXHALE_DURATION : INHALE_DURATION;
+                    // Phase complete, switch to next phase
+                    setPhase(currentPhase => {
+                        if (currentPhase === 'inhale') {
+                            setTimeRemaining(EXHALE_DURATION);
+                            return 'exhale';
+                        } else {
+                            setTimeRemaining(INHALE_DURATION);
+                            setCycleCount(count => count + 1);
+                            return 'inhale';
+                        }
+                    });
+                    return prev; // Return current value, will be overridden by setTimeRemaining above
                 }
                 return prev - 0.1; // Update every 100ms for smooth countdown
             });
         }, 100);
-        
+
         return () => clearInterval(interval);
-    }, [isRunning, switchPhase, phase]);
-    
-    // Format time display
+    }, [isRunning]); // Only depend on isRunning, not phase or switchPhase    // Format time display
     const formatTime = (time) => {
         return time.toFixed(1);
     };

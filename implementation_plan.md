@@ -106,13 +106,14 @@
 **Goal**: Basic audio infrastructure  
 **Time**: 1 day  
 **Tasks**:
-- [ ] Install and configure Tone.js
-- [ ] Create `AudioController.jsx` component
-- [ ] Set up basic oscillator for tone generation
-- [ ] Test audio playback in browser
-- [ ] Handle browser audio permission requirements
+- [x] Install and configure Tone.js
+- [x] Create `AudioController.jsx` component
+- [x] Set up basic oscillator for tone generation
+- [x] Test audio playback in browser
+- [x] Handle browser audio permission requirements
 
 **Deliverable**: Working Tone.js setup with basic sound
+**Status**: ✅ COMPLETE - AudioController with Tone.js oscillator and browser audio handling
 
 **Test**: Can generate and play simple tones
 
@@ -120,13 +121,14 @@
 **Goal**: Rising tone during inhale  
 **Time**: 2 days  
 **Tasks**:
-- [ ] Map timer progress to frequency range for inhale
-- [ ] Choose frequency range (e.g., 200Hz → 400Hz)
-- [ ] Implement smooth frequency transitions
-- [ ] Sync audio start/stop with timer phases
-- [ ] Test audio-visual synchronization
+- [x] Map timer progress to frequency range for inhale
+- [x] Choose frequency range (e.g., 200Hz → 400Hz)
+- [x] Implement smooth frequency transitions
+- [x] Sync audio start/stop with timer phases
+- [x] Test audio-visual synchronization
 
 **Deliverable**: Rising tone during inhale phase
+**Status**: ✅ COMPLETE - 220Hz→440Hz frequency progression during inhale
 
 **Test**: Tone pitch rises smoothly as chakras light up
 
@@ -134,12 +136,13 @@
 **Goal**: Falling tone during exhale  
 **Time**: 1 day  
 **Tasks**:
-- [ ] Implement descending frequency for exhale phase
-- [ ] Ensure smooth transition from inhale to exhale pitch
-- [ ] Test full audio cycle
-- [ ] Fine-tune frequency ranges for pleasant sound
+- [x] Implement descending frequency for exhale phase
+- [x] Ensure smooth transition from inhale to exhale pitch
+- [x] Test full audio cycle
+- [x] Fine-tune frequency ranges for pleasant sound
 
 **Deliverable**: Complete audio breathing cycle
+**Status**: ✅ COMPLETE - 440Hz→220Hz frequency progression during exhale
 
 **Test**: Audio and visual are perfectly synchronized
 
@@ -147,13 +150,14 @@
 **Goal**: Improve audio quality and user experience  
 **Time**: 1 day  
 **Tasks**:
-- [ ] Add volume controls
-- [ ] Implement audio fade in/out for smooth start/stop
-- [ ] Choose better waveform (sine, triangle, etc.)
+- [x] Add volume controls
+- [x] Implement audio fade in/out for smooth start/stop
+- [x] Choose better waveform (sine, triangle, etc.)
 - [ ] Add subtle reverb or effects for ambiance
 - [ ] Test on different devices/browsers
 
 **Deliverable**: Polished audio experience
+**Status**: 🔄 IN PROGRESS - Volume controls and smooth sine wave implemented
 
 **Test**: Audio sounds good and works across devices
 
