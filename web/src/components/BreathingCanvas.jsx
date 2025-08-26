@@ -1,15 +1,13 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+import SpheroidsModel from './SpheroidModel'; // Uncomment for testing
 
-
-function SpheroidsModel(props) {
-    // The GLB is in public/models/spheroids.glb, so use "/models/spheroids.glb"
-    const { scene } = useGLTF("/models/spheroids.glb");
-    console.log("Loaded GLTF scene:", scene);
-    return <primitive object={scene} {...props} />;
-}
-
+// Production version - simple and clean
+// function SpheroidsModel(props) {
+//     const { scene } = useGLTF("/models/spheroids.glb");
+//     return <primitive object={scene} {...props} />;
+// }
 
 export default function BreathingCanvas() {
     return (
