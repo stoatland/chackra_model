@@ -12,7 +12,7 @@ import ChakraSpheroidModel from './ChakraSpheroidModel'; // Chakra zones version
 
 export default function BreathingCanvas() {
     return (
-        <div style={{ width: "100vw", height: "100vh" }}>
+        <div style={{ width: "100%", height: "100%" }}>
             <Canvas camera={{ position: [5, 5, 5], fov: 50 }} style={{ background: '#222' }}>
                 <ambientLight intensity={0.7} />
                 <directionalLight position={[5, 5, 5]} intensity={1} />
