@@ -37,6 +37,7 @@ chackra_model/
 │   │   └── App.jsx
 │   └── package.json
 └── chakra_model_instructions.md
+└── index.html
 ```
 
 ## 3D Model Structure
