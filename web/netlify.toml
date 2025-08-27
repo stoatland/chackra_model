@@ -1,0 +1,10 @@
+# chackra_model/netlify.toml
+
+[build]
+  command = "cd web && npm run build"
+  publish = "web/dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
